@@ -1,11 +1,10 @@
 package pl.poznan.put.managers;
 
+import pl.poznan.put.algorithm.BruteForceScheduler;
 import pl.poznan.put.algorithm.Calc;
-import pl.poznan.put.algorithm.MyScheduler;
 import pl.poznan.put.algorithm.Scheduler;
 import pl.poznan.put.structures.Instance;
 import pl.poznan.put.structures.Job;
-import pl.poznan.put.structures.Problem;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,15 +24,15 @@ public class AppManager {
     }
 
     public void run() throws FileNotFoundException {
-        List<Problem> problems = FileManager.readFile(filePath);
+        List<List<Job>> problems = FileManager.readFile(filePath);
 
-        Scheduler scheduler = new MyScheduler();
+        Scheduler scheduler = new BruteForceScheduler();
         Instance instance = new Instance(k, problems.get(k), h);
-        Problem solved = scheduler.schedule(instance);
+        List<Job> solved = scheduler.schedule(instance);
 
         String fileName = String.format("%d_%d_%d.txt", n, k, (int) Math.round(h * 10));
         final int costFunctionValue = Calc.countCostFunctionValue(instance, solved);
-        //printCostFunctionValue(instance, costFunctionValue);
+        printCostFunctionValue(instance, costFunctionValue);
 
         try {
             FileManager.saveResult(fileName, costFunctionValue, solved);
@@ -41,10 +40,9 @@ public class AppManager {
             System.out.println("Can't write results to file");
             e.printStackTrace();
         }
-        //printCostFunctionValue(instance, solved);
     }
 
-    private void printSolvedWithCostFuctionValue(Instance instance, Problem solved, int costFunctionValue) {
+    private void printSolvedWithCostFuctionValue(Instance instance, List<Job> solved, int costFunctionValue) {
         printCostFunctionValue(instance, costFunctionValue);
         printProblem(solved);
     }
@@ -54,9 +52,9 @@ public class AppManager {
                 ", h: " + instance.getH() + ", cost: " + costFunctionValue);
     }
 
-    private void printProblem(Problem problem) {
+    private void printProblem(List<Job> jobs) {
         System.out.println("id\t\tp(i)\ta(i)\tb(i)\ttard/earl");
-        for (Job job : problem.getJobs()) {
+        for (Job job : jobs) {
             System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d\t\t%.2f",
                     job.getId(),
                     job.getProcessingTime(),

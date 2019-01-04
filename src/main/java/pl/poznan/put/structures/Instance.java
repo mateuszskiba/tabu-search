@@ -1,13 +1,16 @@
 package pl.poznan.put.structures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Instance {
     private int id;
-    private Problem problem;
+    private List<Job> jobs;
     private double h;
 
-    public Instance(int id, Problem problem, double h) {
+    public Instance(int id, List<Job> jobs, double h) {
         this.id = id;
-        this.problem = problem;
+        this.jobs = jobs;
         this.h = h;
     }
 
@@ -15,8 +18,14 @@ public class Instance {
         return id;
     }
 
-    public Problem getProblem() {
-        return problem;
+    public List<Job> cloneJobs() {
+        final List<Job> result = new ArrayList<>();
+        jobs.forEach(job -> result.add(job.clone()));
+        return result;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
     }
 
     public double getH() {
