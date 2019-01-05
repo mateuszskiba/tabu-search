@@ -1,8 +1,8 @@
 package pl.poznan.put.managers;
 
-import pl.poznan.put.algorithm.BruteForceScheduler;
 import pl.poznan.put.algorithm.Calc;
 import pl.poznan.put.algorithm.Scheduler;
+import pl.poznan.put.algorithm.tabuSearch.TabuSearchScheduler;
 import pl.poznan.put.structures.Instance;
 import pl.poznan.put.structures.Job;
 
@@ -26,13 +26,14 @@ public class AppManager {
     public void run() throws FileNotFoundException {
         List<List<Job>> problems = FileManager.readFile(filePath);
 
-        Scheduler scheduler = new BruteForceScheduler();
+        Scheduler scheduler = new TabuSearchScheduler();
         Instance instance = new Instance(k, problems.get(k), h);
         List<Job> solved = scheduler.schedule(instance);
 
         String fileName = String.format("%d_%d_%d.txt", n, k, (int) Math.round(h * 10));
         final int costFunctionValue = Calc.countCostFunctionValue(instance, solved);
         printCostFunctionValue(instance, costFunctionValue);
+        //printSolvedWithCostFuctionValue(instance, solved, costFunctionValue);
 
         try {
             FileManager.saveResult(fileName, costFunctionValue, solved);

@@ -24,6 +24,7 @@ public class Instance {
         return result;
     }
 
+    @SuppressWarnings("do not use this method on your own, use cloneJobs() instead")
     public List<Job> getJobs() {
         return jobs;
     }
