@@ -4,11 +4,13 @@ public class Candidate {
     private int startIndex;
     private int destinationIndex;
     private int costProfit;
+    private Move moveType;
 
-    public Candidate(int startIndex, int destinationIndex, int costProfit) {
+    public Candidate(int startIndex, int destinationIndex, int costProfit, Move moveType) {
         this.startIndex = startIndex;
         this.destinationIndex = destinationIndex;
         this.costProfit = costProfit;
+        this.moveType = moveType;
     }
 
     public int getStartIndex() {
@@ -22,4 +24,6 @@ public class Candidate {
     public int getCostProfit() {
         return costProfit;
     }
+
+    public Move getMoveType() { return moveType; }
 }

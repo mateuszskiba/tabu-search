@@ -8,8 +8,13 @@ import pl.poznan.put.structures.Job;
 import java.util.*;
 
 public class TabuSearchScheduler implements Scheduler {
-    private final int NUMBER_OF_CANDIDATES = 100;
+    private final int NUMBER_OF_CANDIDATES = 200;
     private final Random random = new Random();
+    private int timeBound;
+
+    public TabuSearchScheduler(int timeBound) {
+        this.timeBound = timeBound;
+    }
 
     @Override
     public List<Job> schedule(Instance instance) {
@@ -22,7 +27,9 @@ public class TabuSearchScheduler implements Scheduler {
         int bestCost = currentCost;
 
         List<Candidate> candidates = new ArrayList<>();
-        for (int i=0; i<1000; i++) {
+        long startTime = System.currentTimeMillis();
+        long iterationTime = System.currentTimeMillis();
+        while((iterationTime - startTime) < timeBound) {
             candidates.clear();
             while (candidates.size() < NUMBER_OF_CANDIDATES) {
                 int startIndex = getRandInt(size);
@@ -37,18 +44,39 @@ public class TabuSearchScheduler implements Scheduler {
                         new Candidate(
                                 startIndex,
                                 destinationIndex,
-                                currentCost - newCost)
+                                currentCost - newCost,
+                                Move.SWAP)
+                );
+
+                int jobIndex = getRandInt(size);
+                int newJobIndex;
+                do {
+                    newJobIndex = getRandInt(size);
+                } while (newJobIndex==jobIndex);
+                List<Job> shiftJobs = shiftJobs(jobs, jobIndex, newJobIndex);
+                final int shiftCost = Calc.countCostFunctionValue(instance, shiftJobs);
+
+                candidates.add(
+                        new Candidate(
+                                jobIndex,
+                                newJobIndex,
+                                currentCost - shiftCost,
+                                Move.SHIFT)
                 );
             }
 
             candidates = sortByCost(candidates);
             final Candidate bestCandidate = candidates.get(0);
-            lastSchedule = swapJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex());
+            lastSchedule = (bestCandidate.getMoveType()==Move.SWAP) ?
+                    swapJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex()) :
+                    shiftJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex());
             currentCost = Calc.countCostFunctionValue(instance, lastSchedule);
             if (currentCost < bestCost) {
                 bestSchedule = lastSchedule;
                 bestCost = currentCost;
             }
+
+            iterationTime = System.currentTimeMillis();
         }
 
         return bestSchedule;
@@ -74,4 +102,17 @@ public class TabuSearchScheduler implements Scheduler {
         jobs.sort(Comparator.comparingDouble(Job::getTardinessToEarlinessRatio).reversed());
         return jobs;
     }
+
+    private List<Job> shiftJobs(List<Job> jobs, int sourceIndex, int destinationIndex) {
+        final List<Job> clonedJobs = new ArrayList<>();
+        jobs.forEach(job -> clonedJobs.add(job.clone()));
+        Job jobToShift = clonedJobs.remove(sourceIndex);
+        if (sourceIndex<destinationIndex) {
+            clonedJobs.add(destinationIndex-1, jobToShift);
+        } else {
+            clonedJobs.add(destinationIndex, jobToShift);
+        }
+        return clonedJobs;
+    }
+
 }
