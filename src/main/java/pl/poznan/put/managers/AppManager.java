@@ -14,19 +14,21 @@ public class AppManager {
     private final int n;
     private final int k;
     private final double h;
+    private final int t;
     private final String filePath;
 
-    public AppManager(int n, int k, double h) {
+    public AppManager(int n, int k, double h, int t) {
         this.n = n;
         this.k = k;
         this.h = h;
+        this.t = t;
         this.filePath = String.format("sch%d.txt", n);
     }
 
     public void run() throws FileNotFoundException {
         List<List<Job>> problems = FileManager.readFile(filePath);
 
-        Scheduler scheduler = new TabuSearchScheduler();
+        Scheduler scheduler = new TabuSearchScheduler(t*n);
         Instance instance = new Instance(k, problems.get(k), h);
         List<Job> solved = scheduler.schedule(instance);
 
