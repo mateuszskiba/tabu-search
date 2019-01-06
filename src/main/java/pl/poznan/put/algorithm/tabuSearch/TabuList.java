@@ -4,15 +4,15 @@ import java.util.*;
 
 public class TabuList {
     private Set<TabuItem> tabu = new LinkedHashSet<>();
-    private int size;
+    private int maxSize;
 
-    public TabuList(int size) {
-        this.size = size;
+    public TabuList(int maxSize) {
+        this.maxSize = maxSize;
     }
     
 
     public void addMove(Integer jobId) {
-        if (tabu.size() >= size) {
+        if (tabu.size() >= maxSize) {
             removeOldestMove();
         }
         tabu.add(new TabuItem(jobId));
@@ -31,6 +31,7 @@ public class TabuList {
                 toRemove = next;
             }
         }
+        removeMove(toRemove);
     }
 
 
