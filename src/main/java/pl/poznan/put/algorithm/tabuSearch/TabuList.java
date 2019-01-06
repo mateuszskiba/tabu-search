@@ -1,40 +1,47 @@
 package pl.poznan.put.algorithm.tabuSearch;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class TabuList {
-    private Map<Candidate, Integer> tabuList;
+    private Map<Integer, Integer> tabu;
     private int size;
     private final static int ROUNDS_TABU = 10;
 
-    public TabuList(Map<Candidate, Integer> tabuList, int size) {
-        this.tabuList = tabuList;
+    public TabuList(Map<Integer, Integer> tabu, int size) {
+        this.tabu = tabu;
         this.size = size;
     }
+    
 
-    public boolean addMove(Candidate candidate) {
-        if (tabuList.size() >= size) return false;
-        if (!contains(candidate)) return false;
-        tabuList.put(candidate, ROUNDS_TABU);
-        size++;
+    public boolean addMove(Integer jobId) {
+        if (tabu.size() >= size) return false;
+//        if (contains(jobId)) return false;
+        tabu.put(jobId, ROUNDS_TABU);
         return true;
     }
 
-    public boolean removeMove(Candidate candidate) {
-//        if (!contains(candidate)) return false;
-        tabuList.remove(candidate);
+    public boolean removeMove(Integer jobId) {
+//        if (!contains(jobId)) return false;
+        tabu.remove(jobId);
         return true;
     }
 
-    public boolean contains(Candidate candidate) {
-        return tabuList.containsKey(candidate);
+//    public boolean removeOldestMove() {
+//        int oldestJobLifetime = Collections.min(tabu.values());
+//
+//    }
+
+
+    public boolean contains(Integer jobId) {
+        return tabu.containsKey(jobId);
     }
 
     public void decrementValuesOrEraseFromTabu() {
-        if (!tabuList.isEmpty()) {
-            tabuList.forEach(((candidate, integer) -> {
-                integer--;
-                if (integer <= 0) removeMove(candidate);
+        if (!tabu.isEmpty()) {
+            tabu.forEach(((jobId, lifetime) -> {
+                lifetime--;
+                if (lifetime <= 0) removeMove(jobId);
             }));
         }
     }
