@@ -9,6 +9,7 @@ import java.util.*;
 
 public class TabuSearchScheduler implements Scheduler {
     private final int NUMBER_OF_CANDIDATES = 100;
+    private final int TABU_SIZE = 10;
     private final Random random = new Random();
     private int timeBound;
 
@@ -27,6 +28,8 @@ public class TabuSearchScheduler implements Scheduler {
         int bestCost = currentCost;
 
         List<Candidate> candidates = new ArrayList<>();
+        TabuList tabuList = new TabuList(new HashMap<>(), TABU_SIZE);
+
         long startTime = System.currentTimeMillis();
         long iterationTime = System.currentTimeMillis();
         while((iterationTime - startTime) < timeBound) {
@@ -55,7 +58,11 @@ public class TabuSearchScheduler implements Scheduler {
             }
 
             candidates = sortByCost(candidates);
-            final Candidate bestCandidate = candidates.get(0);
+            Iterator<Candidate> iter = candidates.iterator();
+            Candidate bestCandidate;
+            do {
+                bestCandidate = iter.next();
+            } while (tabuList.contains(bestCandidate) && iter.hasNext());
             lastSchedule = (bestCandidate.getMoveType() == Move.SWAP) ?
                     swapJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex()) :
                     shiftJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex());
@@ -65,8 +72,12 @@ public class TabuSearchScheduler implements Scheduler {
                 bestCost = currentCost;
             }
 
+            tabuList.decrementValuesOrEraseFromTabu();
+            tabuList.addMove(bestCandidate);
+
             iterationTime = System.currentTimeMillis();
         }
+        System.out.println(iterationTime- startTime);
 
         return bestSchedule;
     }
@@ -96,11 +107,11 @@ public class TabuSearchScheduler implements Scheduler {
         final List<Job> clonedJobs = new ArrayList<>();
         jobs.forEach(job -> clonedJobs.add(job.clone()));
         Job jobToShift = clonedJobs.remove(sourceIndex);
-        if (sourceIndex < destinationIndex) {
-            clonedJobs.add(destinationIndex-1, jobToShift);
-        } else {
-            clonedJobs.add(destinationIndex, jobToShift);
-        }
+//        if (sourceIndex < destinationIndex) {
+//            clonedJobs.add(destinationIndex-1, jobToShift);
+//        } else {
+        clonedJobs.add(destinationIndex, jobToShift);
+//        }
         return clonedJobs;
     }
 

@@ -1,5 +1,7 @@
 package pl.poznan.put.algorithm.tabuSearch;
 
+import java.util.Objects;
+
 public class Candidate {
     private int startIndex;
     private int destinationIndex;
@@ -26,4 +28,19 @@ public class Candidate {
     }
 
     public Move getMoveType() { return moveType; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Candidate candidate = (Candidate) o;
+        return startIndex == candidate.startIndex &&
+                destinationIndex == candidate.destinationIndex &&
+                moveType == candidate.moveType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startIndex, destinationIndex, moveType);
+    }
 }
