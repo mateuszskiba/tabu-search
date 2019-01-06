@@ -7,19 +7,20 @@ import java.util.List;
 
 public class Calc {
 
+    private static Integer dueDate;
+
     private Calc() {}
 
-    public static int countDueDate(Instance instance) {
+    public static void countDueDate(Instance instance) {
         final List<Job> jobs = instance.getJobs();
         final int sumP = jobs.stream()
                 .mapToInt(Job::getProcessingTime)
                 .sum();
         final double h = instance.getH();
-        return (int) Math.floor(sumP * h);
+        dueDate = (int) Math.floor(sumP * h);
     }
 
-    public static int countCostFunctionValue(Instance instance, List<Job> solved) {
-        final int dueDate = Calc.countDueDate(instance);
+    public static int countCostFunctionValue(List<Job> solved) {
         int currentTime = 0;
         int costFunctionValue = 0;
 

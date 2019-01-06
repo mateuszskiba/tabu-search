@@ -33,7 +33,7 @@ public class AppManager {
         List<Job> solved = scheduler.schedule(instance);
 
         String fileName = String.format("%d_%d_%d.txt", n, k, (int) Math.round(h * 10));
-        final int costFunctionValue = Calc.countCostFunctionValue(instance, solved);
+        final int costFunctionValue = Calc.countCostFunctionValue(solved);
         printCostFunctionValue(instance, costFunctionValue);
         //printSolvedWithCostFuctionValue(instance, solved, costFunctionValue);
 

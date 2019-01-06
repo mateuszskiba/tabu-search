@@ -1,7 +1,5 @@
 package pl.poznan.put.algorithm.tabuSearch;
 
-import java.util.Objects;
-
 public class Candidate {
     private int startIndex;
     private int destinationIndex;

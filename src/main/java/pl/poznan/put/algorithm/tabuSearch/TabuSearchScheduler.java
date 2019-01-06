@@ -23,7 +23,8 @@ public class TabuSearchScheduler implements Scheduler {
         final int size = jobs.size();
 
         List<Job> bestSchedule = sortByRatio(jobs);
-        int currentCost = Calc.countCostFunctionValue(instance, bestSchedule);
+        Calc.countDueDate(instance);
+        int currentCost = Calc.countCostFunctionValue(bestSchedule);
         List<Job> lastSchedule = bestSchedule;
         int bestCost = currentCost;
 
@@ -51,15 +52,15 @@ public class TabuSearchScheduler implements Scheduler {
                         destinationIndex = getRandInt(size);
                         job = lastSchedule.get(destinationIndex);
                     } while (tabuList.contains(job.getId()) || startIndex == destinationIndex);
-                    currentSchedule = swapJobs(jobs, startIndex, destinationIndex);
+                    currentSchedule = swapJobs(lastSchedule, startIndex, destinationIndex);
                 } else {
                     do {
                         destinationIndex = getRandInt(size);
                     } while (startIndex == destinationIndex);
-                    currentSchedule = shiftJobs(jobs, startIndex, destinationIndex);
+                    currentSchedule = shiftJobs(lastSchedule, startIndex, destinationIndex);
                 }
 
-                final int newCost = Calc.countCostFunctionValue(instance, currentSchedule);
+                final int newCost = Calc.countCostFunctionValue(currentSchedule);
 
                 candidates.add(
                         new Candidate(
@@ -75,7 +76,7 @@ public class TabuSearchScheduler implements Scheduler {
             lastSchedule = (bestCandidate.getMoveType() == Move.SWAP) ?
                     swapJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex()) :
                     shiftJobs(lastSchedule, bestCandidate.getStartIndex(), bestCandidate.getDestinationIndex());
-            currentCost = Calc.countCostFunctionValue(instance, lastSchedule);
+            currentCost = Calc.countCostFunctionValue(lastSchedule);
             if (currentCost < bestCost) {
                 bestSchedule = lastSchedule;
                 bestCost = currentCost;
