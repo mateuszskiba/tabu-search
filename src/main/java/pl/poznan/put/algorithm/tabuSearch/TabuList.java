@@ -1,48 +1,56 @@
 package pl.poznan.put.algorithm.tabuSearch;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public class TabuList {
-    private Map<Integer, Integer> tabu;
+    private Set<TabuItem> tabu = new LinkedHashSet<>();
     private int size;
-    private final static int ROUNDS_TABU = 10;
 
-    public TabuList(Map<Integer, Integer> tabu, int size) {
-        this.tabu = tabu;
+    public TabuList(int size) {
         this.size = size;
     }
     
 
-    public boolean addMove(Integer jobId) {
-        if (tabu.size() >= size) return false;
-//        if (contains(jobId)) return false;
-        tabu.put(jobId, ROUNDS_TABU);
-        return true;
+    public void addMove(Integer jobId) {
+        if (tabu.size() >= size) {
+            removeOldestMove();
+        }
+        tabu.add(new TabuItem(jobId));
     }
 
-    public boolean removeMove(Integer jobId) {
-//        if (!contains(jobId)) return false;
-        tabu.remove(jobId);
-        return true;
+    public void removeMove(TabuItem item) {
+        tabu.remove(item);
     }
 
-//    public boolean removeOldestMove() {
-//        int oldestJobLifetime = Collections.min(tabu.values());
-//
-//    }
+    public void removeOldestMove() {
+        TabuItem toRemove = null;
+        Iterator<TabuItem> iter = tabu.iterator();
+        while (iter.hasNext()){
+            TabuItem next = iter.next();
+            if (toRemove == null || next.getLifetime() < toRemove.getLifetime()) {
+                toRemove = next;
+            }
+        }
+    }
 
 
     public boolean contains(Integer jobId) {
-        return tabu.containsKey(jobId);
+        return tabu.contains(new TabuItem(jobId));
     }
 
-    public void decrementValuesOrEraseFromTabu() {
+    public void decrementValuesAndEraseIfNecessary() {
         if (!tabu.isEmpty()) {
-            tabu.forEach(((jobId, lifetime) -> {
-                lifetime--;
-                if (lifetime <= 0) removeMove(jobId);
-            }));
+            Deque<TabuItem> stack = new ArrayDeque<>();
+            tabu.forEach(tabuItem -> {
+                tabuItem.decrementLifetime();
+                if (tabuItem.isInvalid()) {
+                    stack.push(tabuItem);
+                }
+            });
+            while (!stack.isEmpty()) {
+                TabuItem item = stack.pop();
+                removeMove(item);
+            }
         }
     }
 }

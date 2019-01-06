@@ -28,7 +28,7 @@ public class TabuSearchScheduler implements Scheduler {
         int bestCost = currentCost;
 
         List<Candidate> candidates = new ArrayList<>();
-        TabuList tabuList = new TabuList(new HashMap<>(), TABU_SIZE);
+        TabuList tabuList = new TabuList(TABU_SIZE);
 
         long startTime = System.currentTimeMillis();
         long iterationTime = System.currentTimeMillis();
@@ -39,18 +39,23 @@ public class TabuSearchScheduler implements Scheduler {
                 List<Job> currentSchedule;
 
                 int startIndex;
+                Job job;
                 do {
                     startIndex = getRandInt(size);
-                } while (tabuList.contains(startIndex));
+                    job = lastSchedule.get(startIndex);
+                } while (tabuList.contains(job.getId()));
 
                 int destinationIndex;
                 if (randMove == Move.SWAP) {
                     do {
                         destinationIndex = getRandInt(size);
-                    } while (tabuList.contains(destinationIndex));
+                        job = lastSchedule.get(destinationIndex);
+                    } while (tabuList.contains(job.getId()) || startIndex == destinationIndex);
                     currentSchedule = swapJobs(jobs, startIndex, destinationIndex);
                 } else {
-                    destinationIndex = getRandInt(size);
+                    do {
+                        destinationIndex = getRandInt(size);
+                    } while (startIndex == destinationIndex);
                     currentSchedule = shiftJobs(jobs, startIndex, destinationIndex);
                 }
 
@@ -76,7 +81,7 @@ public class TabuSearchScheduler implements Scheduler {
                 bestCost = currentCost;
             }
 
-            tabuList.decrementValuesOrEraseFromTabu();
+            tabuList.decrementValuesAndEraseIfNecessary();
             tabuList.addMove(bestCandidate.getStartIndex());
             if (bestCandidate.getMoveType() == Move.SWAP) tabuList.addMove(bestCandidate.getDestinationIndex());
 
@@ -112,11 +117,7 @@ public class TabuSearchScheduler implements Scheduler {
         final List<Job> clonedJobs = new ArrayList<>();
         jobs.forEach(job -> clonedJobs.add(job.clone()));
         Job jobToShift = clonedJobs.remove(sourceIndex);
-//        if (sourceIndex < destinationIndex) {
-//            clonedJobs.add(destinationIndex-1, jobToShift);
-//        } else {
         clonedJobs.add(destinationIndex, jobToShift);
-//        }
         return clonedJobs;
     }
 
