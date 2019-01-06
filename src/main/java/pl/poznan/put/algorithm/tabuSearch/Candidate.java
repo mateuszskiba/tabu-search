@@ -6,7 +6,7 @@ public class Candidate {
     private int costProfit;
     private Move moveType;
 
-    public Candidate(int startIndex, int destinationIndex, int costProfit, Move moveType) {
+    public Candidate(Move moveType, int startIndex, int destinationIndex, int costProfit) {
         this.startIndex = startIndex;
         this.destinationIndex = destinationIndex;
         this.costProfit = costProfit;
