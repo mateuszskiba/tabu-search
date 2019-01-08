@@ -82,13 +82,12 @@ public class TabuSearchScheduler implements Scheduler {
                 bestCost = currentCost;
             }
 
-            tabuList.decrementValuesAndEraseIfNecessary();
             tabuList.addMove(bestCandidate.getStartIndex());
             if (bestCandidate.getMoveType() == Move.SWAP) tabuList.addMove(bestCandidate.getDestinationIndex());
 
             iterationTime = System.currentTimeMillis();
         }
-        System.out.println(iterationTime- startTime);
+        System.out.println(iterationTime - startTime);
 
         return bestSchedule;
     }
