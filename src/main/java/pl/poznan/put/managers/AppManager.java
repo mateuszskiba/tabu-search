@@ -28,7 +28,7 @@ public class AppManager {
     public void run() throws FileNotFoundException {
         List<List<Job>> problems = FileManager.readFile(filePath);
 
-        Scheduler scheduler = new TabuSearchScheduler(t*n);
+        Scheduler scheduler = new TabuSearchScheduler(n, t*n);
         Instance instance = new Instance(k, problems.get(k), h);
         List<Job> solved = scheduler.schedule(instance);
 
