@@ -82,7 +82,7 @@ public class TabuSearchScheduler implements Scheduler {
                 bestCost = currentCost;
             }
 
-            tabuList.decrementValuesAndEraseIfNecessary();
+//            tabuList.decrementValuesAndEraseIfNecessary();
             tabuList.addMove(bestCandidate.getStartIndex());
             if (bestCandidate.getMoveType() == Move.SWAP) tabuList.addMove(bestCandidate.getDestinationIndex());
 
