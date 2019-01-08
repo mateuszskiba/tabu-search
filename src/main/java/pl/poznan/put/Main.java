@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             // for test purposes only
-            AppManager appManager = new AppManager(100, 0, 0.4, 100);
+            AppManager appManager = new AppManager(100, 0, 0.4, 10);
             appManager.run();
 //            if (args.length == 3) {
 //                final int n = Integer.parseInt(args[0]);
