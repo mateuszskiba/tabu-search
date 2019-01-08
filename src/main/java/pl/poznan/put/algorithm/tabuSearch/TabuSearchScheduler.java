@@ -87,7 +87,7 @@ public class TabuSearchScheduler implements Scheduler {
 
             iterationTime = System.currentTimeMillis();
         }
-        System.out.println(iterationTime- startTime);
+        System.out.println(iterationTime - startTime);
 
         return bestSchedule;
     }

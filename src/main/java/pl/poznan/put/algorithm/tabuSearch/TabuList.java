@@ -13,7 +13,7 @@ public class TabuList {
 
     public void addMove(Integer jobId) {
         tabu.add(jobId);
-        if (tabu.size() >= maxSize) {
+        if (tabu.size() > maxSize) {
             tabu.remove(0);
         }
     }
