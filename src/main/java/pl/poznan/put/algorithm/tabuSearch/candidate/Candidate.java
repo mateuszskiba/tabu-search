@@ -1,29 +1,29 @@
-package pl.poznan.put.algorithm.tabuSearch;
+package pl.poznan.put.algorithm.tabuSearch.candidate;
 
-public class Candidate {
+import pl.poznan.put.algorithm.tabuSearch.Move;
+
+import java.util.List;
+
+public abstract class Candidate {
     private int startIndex;
     private int destinationIndex;
     private int costProfit;
-    private Move moveType;
 
-    public Candidate(Move moveType, int startIndex, int destinationIndex, int costProfit) {
+    public Candidate(int startIndex, int destinationIndex, int costProfit) {
         this.startIndex = startIndex;
         this.destinationIndex = destinationIndex;
         this.costProfit = costProfit;
-        this.moveType = moveType;
     }
 
     public int getStartIndex() {
         return startIndex;
     }
-
     public int getDestinationIndex() {
         return destinationIndex;
     }
-
     public int getCostProfit() {
         return costProfit;
     }
-
-    public Move getMoveType() { return moveType; }
+    public abstract List<Integer> getJobIds();
+    public abstract Move getMoveType();
 }

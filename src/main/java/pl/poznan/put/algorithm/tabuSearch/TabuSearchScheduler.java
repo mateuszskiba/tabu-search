@@ -2,6 +2,9 @@ package pl.poznan.put.algorithm.tabuSearch;
 
 import pl.poznan.put.algorithm.Calc;
 import pl.poznan.put.algorithm.Scheduler;
+import pl.poznan.put.algorithm.tabuSearch.candidate.Candidate;
+import pl.poznan.put.algorithm.tabuSearch.candidate.ShiftCandidate;
+import pl.poznan.put.algorithm.tabuSearch.candidate.SwapCandidate;
 import pl.poznan.put.structures.Instance;
 import pl.poznan.put.structures.Job;
 
@@ -62,13 +65,26 @@ public class TabuSearchScheduler implements Scheduler {
 
                 final int newCost = Calc.countCostFunctionValue(currentSchedule);
 
-                candidates.add(
-                        new Candidate(
-                                randMove,
-                                startIndex,
-                                destinationIndex,
-                                currentCost - newCost)
-                );
+                if (randMove == Move.SHIFT) {
+                    candidates.add(
+                            new ShiftCandidate(
+                                    startIndex,
+                                    destinationIndex,
+                                    currentCost - newCost,
+                                    lastSchedule.get(startIndex).getId()
+                            )
+                    );
+                } else {
+                    candidates.add(
+                            new SwapCandidate(
+                                    startIndex,
+                                    destinationIndex,
+                                    currentCost - newCost,
+                                    lastSchedule.get(startIndex).getId(),
+                                    lastSchedule.get(destinationIndex).getId()
+                            )
+                    );
+                }
             }
 
             candidates = sortByCost(candidates);
@@ -82,8 +98,7 @@ public class TabuSearchScheduler implements Scheduler {
                 bestCost = currentCost;
             }
 
-            tabuList.addMove(bestCandidate.getStartIndex());
-            if (bestCandidate.getMoveType() == Move.SWAP) tabuList.addMove(bestCandidate.getDestinationIndex());
+            tabuList.addMove(bestCandidate.getJobIds());
 
             iterationTime = System.currentTimeMillis();
         }

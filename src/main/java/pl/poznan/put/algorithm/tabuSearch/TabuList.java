@@ -9,18 +9,15 @@ public class TabuList {
     public TabuList(int maxSize) {
         this.maxSize = maxSize;
     }
-    
 
-    public void addMove(Integer jobId) {
-        tabu.add(jobId);
-        if (tabu.size() > maxSize) {
+    public void addMove(List<Integer> jobIds) {
+        tabu.addAll(jobIds);
+        while (tabu.size() > maxSize) {
             tabu.remove(0);
         }
     }
 
-
     public boolean contains(Integer jobId) {
         return tabu.contains(jobId);
     }
-
 }
