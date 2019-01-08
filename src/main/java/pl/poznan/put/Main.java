@@ -17,7 +17,7 @@ public class Main {
 //                for (Integer k : ks){
 //                    for (Double h : hs){
 //            AppManager appManager = new AppManager(n, k, h, 10);
-            AppManager appManager = new AppManager(100, 0, 0.4, 10);
+            AppManager appManager = new AppManager(20, 6, 0.2, 10);
             appManager.run();
 //                    }
 //                }

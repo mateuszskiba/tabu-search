@@ -14,9 +14,11 @@ public class TabuSearchScheduler implements Scheduler {
     private final int NUMBER_OF_CANDIDATES = 100;
     private final int TABU_SIZE = 10;
     private final Random random = new Random();
-    private int timeBound;
+    private final int n;
+    private final int timeBound;
 
-    public TabuSearchScheduler(int timeBound) {
+    public TabuSearchScheduler(int n, int timeBound) {
+        this.n = n;
         this.timeBound = timeBound;
     }
 
@@ -32,7 +34,7 @@ public class TabuSearchScheduler implements Scheduler {
         int bestCost = currentCost;
 
         List<Candidate> candidates = new ArrayList<>();
-        TabuList tabuList = new TabuList(TABU_SIZE);
+        TabuList tabuList = new TabuList(Math.min((int) (0.2 * n), TABU_SIZE));
 
         long startTime = System.currentTimeMillis();
         long iterationTime = System.currentTimeMillis();
