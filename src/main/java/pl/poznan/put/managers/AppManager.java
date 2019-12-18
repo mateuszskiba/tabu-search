@@ -35,7 +35,6 @@ public class AppManager {
         String fileName = String.format("%d_%d_%d.txt", n, k, (int) Math.round(h * 10));
         final int costFunctionValue = Calc.countCostFunctionValue(solved);
         printCostFunctionValue(instance, costFunctionValue);
-        //printSolvedWithCostFuctionValue(instance, solved, costFunctionValue);
 
         try {
             FileManager.saveResult(fileName, costFunctionValue, solved);
@@ -45,26 +44,9 @@ public class AppManager {
         }
     }
 
-    private void printSolvedWithCostFuctionValue(Instance instance, List<Job> solved, int costFunctionValue) {
-        printCostFunctionValue(instance, costFunctionValue);
-        printProblem(solved);
-    }
-
     private void printCostFunctionValue(Instance instance, int costFunctionValue) {
         System.out.println("Instance id: " + instance.getId() +
                 ", h: " + instance.getH() + ", cost: " + costFunctionValue);
     }
 
-    private void printProblem(List<Job> jobs) {
-        System.out.println("id\t\tp(i)\ta(i)\tb(i)\ttard/earl");
-        for (Job job : jobs) {
-            System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d\t\t%.2f",
-                    job.getId(),
-                    job.getProcessingTime(),
-                    job.getEarlinessPenalty(),
-                    job.getTardinessPenalty(),
-                    job.getTardinessToEarlinessRatio()
-            ));
-        }
-    }
 }
